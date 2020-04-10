@@ -1,4 +1,6 @@
-﻿namespace Bev.IO.BcrReader
+﻿using System.Globalization;
+
+namespace Bev.IO.BcrReader
 {
     public class Point3D
     {
@@ -15,7 +17,8 @@
 
         public override string ToString()
         {
-            return $"[Point3D - X:{X} Y:{Y} Z:{Z}]";
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            return $"[Point3D - X:{X.ToString()} Y:{Y.ToString()} Z:{Z.ToString()}]";
         }
     }
 }

@@ -2,7 +2,11 @@
 {
     public class RasterData
     {
-        
+
+        private double[,] zValues;
+        private int runningIndex;
+
+        #region Ctor
         public RasterData(int numPoints, int numProfiles)
         {
             NumberOfPointsPerProfile = numPoints;
@@ -10,18 +14,39 @@
             zValues = new double[NumberOfPointsPerProfile, NumberOfProfiles];
             XScale = 1.0;
             YScale = 1.0;
+            ResetRunningIndex();
         }
+        #endregion
 
+        #region Properties
         public int NumberOfPointsPerProfile { get; private set; } // NumPoints
         public int NumberOfProfiles { get; private set; } // NumProfiles
         public double XScale { get; set; }
         public double YScale { get; set; }
+        #endregion
+
+        #region Methods
+
+        // the hight data is filled up pointwise in the raster data array
+        // this is a slow process but compatible with the file parsing technique
+        public void FillUpData(double value)
+        {
+            int profileIndex = runningIndex % NumberOfPointsPerProfile;
+            if (profileIndex >= NumberOfProfiles)
+                return;
+            int pointsIndex = runningIndex - profileIndex * NumberOfPointsPerProfile;
+            if (pointsIndex >= NumberOfPointsPerProfile)
+                return;
+            zValues[pointsIndex, profileIndex] = value;
+            runningIndex++;
+        }
 
         public double[] GetProfileFor(int profileIndex)
         {
             double[] profile = new double[NumberOfPointsPerProfile];
             for (int i = 0; i < NumberOfPointsPerProfile; i++)
             {
+                // this assures that NaN array is returned for a profile index outside the range
                 profile[i] = GetValueFor(i, profileIndex);
             }
             return profile;
@@ -47,7 +72,15 @@
             return new Point3D(xCoordinate, yCoordinate, GetValueFor(pointIndex, profileIndex));
         }
 
-        private double[,] zValues;
+        #endregion
 
+        #region Private stuff
+
+        private void ResetRunningIndex()
+        {
+            runningIndex = 0;
+        }
+
+        #endregion
     }
 }

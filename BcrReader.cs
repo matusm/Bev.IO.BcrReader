@@ -1,4 +1,20 @@
-﻿using System;
+﻿//*******************************************************************************************
+//
+// Library for reading GPS data files according to ISO 25178-7, ISO 25178-71 and EUNA 15178. 
+//
+// Usage:
+//   1) instantiate class with filename as parameter;
+//   2) get profiles or single points of the raster data;
+//
+// Known problems and restrictions:
+//   The legacy parameters "Compression" and "CheckType" are not evaluated. The ISO standards
+//   do not recommend them and they were propably never used. 
+//   Trailer formatted according to ISO 25178-71 can not be interpreted (yet).
+//
+//*******************************************************************************************
+
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -16,6 +32,8 @@ namespace Bev.IO.BcrReader
         {
             Status = ErrorCode.OK;
             LoadDataFromFile(fileName);
+            RawMetaData = new List<string>();
+            MetaData = new Dictionary<string, string>();
             ParseHeaderSection();
             ParseMainSection();
             ParseTrailerSection();
@@ -36,6 +54,7 @@ namespace Bev.IO.BcrReader
         public double ZScale { get; private set; }
         // BCR trailer information
         public Dictionary<string, string> MetaData {get; private set;}
+        public List<string> RawMetaData { get; private set; }
         #endregion
 
         #region Methods
@@ -44,6 +63,13 @@ namespace Bev.IO.BcrReader
         {
             if (Status == ErrorCode.OK)
                 return rasterData.GetProfileFor(profileIndex);
+            return null;
+        }
+
+        public Point3D[] GetPointsProfileFor(int profileIndex)
+        {
+            if (Status == ErrorCode.OK)
+                return rasterData.GetPointsProfileFor(profileIndex);
             return null;
         }
 
@@ -106,13 +132,14 @@ namespace Bev.IO.BcrReader
                 Status = ErrorCode.InvalidVersionField;
                 return;
             }
-            // obsolete parameters are not parsed
             for (int i = 1; i < headerLines.Length; i++)
             {
+                RawMetaData.Add(headerLines[i]);
                 var kv = SplitToKeyValue(headerLines[i]);
                 string key = kv.Item1;
                 string value = kv.Item2;
-                switch (key)
+                MetaData.Add(key, value);
+                switch (key.ToUpper())
                 {
                     case "MANUFACID":
                         ManufacID = value;
@@ -137,6 +164,20 @@ namespace Bev.IO.BcrReader
                         break;
                     case "ZSCALE":
                         ZScale = ParseToDouble(value);
+                        break;
+                    case "ZRESOLUTION":
+                        // not used
+                        break;
+                    case "COMPRESSION":
+                        // not used
+                        break;
+                    case "DATATYPE":
+                        //not used
+                        break;
+                    case "CHECKTYPE":
+                        // not used
+                        break;
+                    default:
                         break;
                 }
             }
@@ -172,12 +213,14 @@ namespace Bev.IO.BcrReader
             if (sections.Length != 3)
             {
                 // even for missing trailer section add a line of information
+                RawMetaData.Add("no trailer section in file");
                 MetaData.Add("MetaDataInFile", "none");
                 return;
             }
             string[] trailerLines = PrepareSections(sections[2]);
             foreach (var line in trailerLines)
             {
+                RawMetaData.Add(line);
                 var kv = SplitToKeyValue(line);
                 MetaData.Add(kv.Item1, kv.Item2);
             }
@@ -213,7 +256,7 @@ namespace Bev.IO.BcrReader
             {
                 return (" ", " ");
             }
-            return (pair[0].Trim().ToUpper(), pair[1].Trim());
+            return (pair[0].Trim(), pair[1].Trim());
         }
 
         private double[] ExtractValuesFromDataLine(string dataLine)

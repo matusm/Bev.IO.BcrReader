@@ -3,7 +3,7 @@
     public class RasterData
     {
 
-        private double[,] zValues;
+        private readonly double[,] zValues;
         private int runningIndex;
 
         #region Ctor
@@ -48,6 +48,17 @@
             {
                 // this assures that NaN array is returned for a profile index outside the range
                 profile[i] = GetValueFor(i, profileIndex);
+            }
+            return profile;
+        }
+
+        public Point3D[] GetPointsProfileFor(int profileIndex)
+        {
+            Point3D[] profile = new Point3D[NumberOfPointsPerProfile];
+            for (int i = 0; i < NumberOfPointsPerProfile; i++)
+            {
+                // this assures that NaN array is returned for a profile index outside the range
+                profile[i] = GetPointFor(i, profileIndex);
             }
             return profile;
         }

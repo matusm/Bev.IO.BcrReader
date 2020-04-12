@@ -42,7 +42,6 @@ namespace Bev.IO.BcrReader
 
         #region Properties
         public ErrorCode Status { get; private set; }
-        public int SectionNumber => sections.Length; // to be removed for release 
         // BCR header parameters
         public string VersionField { get; private set; }
         public DateTime? CreateDate { get; private set; }

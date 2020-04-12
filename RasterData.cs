@@ -31,11 +31,12 @@
         // this is a slow process but compatible with the file parsing technique
         public void FillUpData(double value)
         {
-            int profileIndex = runningIndex % NumberOfPointsPerProfile;
-            if (profileIndex >= NumberOfProfiles)
-                return;
-            int pointsIndex = runningIndex - profileIndex * NumberOfPointsPerProfile;
+            //int pointsIndex = runningIndex - profileIndex * NumberOfPointsPerProfile;
+            int pointsIndex = runningIndex % NumberOfPointsPerProfile;
             if (pointsIndex >= NumberOfPointsPerProfile)
+                return;
+            int profileIndex = runningIndex / NumberOfPointsPerProfile;
+            if (profileIndex >= NumberOfProfiles)
                 return;
             zValues[pointsIndex, profileIndex] = value;
             runningIndex++;

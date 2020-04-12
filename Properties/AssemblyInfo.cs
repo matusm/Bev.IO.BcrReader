@@ -8,7 +8,7 @@
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BEV")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Michael Matus")]
+[assembly: AssemblyCopyright("Michael Matus 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -42,6 +42,7 @@ namespace Bev.IO.BcrReader
 
         #region Properties
         public ErrorCode Status { get; private set; }
+        public int SectionNumber => sections.Length; // to be removed for release 
         // BCR header parameters
         public string VersionField { get; private set; }
         public DateTime? CreateDate { get; private set; }
@@ -108,7 +109,7 @@ namespace Bev.IO.BcrReader
                 Status = ErrorCode.NoFile;
                 return;
             }
-            if (sections.Length < 2 || sections.Length > 3)
+            if (sections.Length < 2 || sections.Length > 4) // there might be a CR after the final *
                 Status = ErrorCode.InvalidSectionNumber;
         }
         
@@ -285,7 +286,7 @@ namespace Bev.IO.BcrReader
 
         private double ParseToDouble(string value)
         {
-            if (double.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out double result))
+            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double result))
                 return result;
             return double.NaN;
         }

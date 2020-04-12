@@ -109,7 +109,7 @@ namespace Bev.IO.BcrReader
                 Status = ErrorCode.NoFile;
                 return;
             }
-            if (sections.Length < 2 || sections.Length > 4) // there might be a CR after the final *
+            if (sections.Length < 3 || sections.Length > 4) // there must be a CR LF after each, including the final, *
                 Status = ErrorCode.InvalidSectionNumber;
         }
         
@@ -211,7 +211,7 @@ namespace Bev.IO.BcrReader
             {
                 return;
             }
-            if (sections.Length != 3)
+            if (sections.Length != 4)
             {
                 // even for missing trailer section add a line of information
                 RawMetaData.Add("no trailer section in file");

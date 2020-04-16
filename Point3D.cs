@@ -1,8 +1,9 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace Bev.IO.BcrReader
 {
-    public class Point3D
+    public class Point3D : IComparable
     {
         public Point3D(double x, double y, double z)
         {
@@ -14,6 +15,14 @@ namespace Bev.IO.BcrReader
         public double X { get; set; }
         public double Y { get; set; }
         public double Z { get; set; }
+
+        public int CompareTo(object obj)
+        {
+            Point3D objc = obj as Point3D;
+            if (X < objc.X) return -1;
+            if (X > objc.X) return 1;
+            return 0;
+        }
 
         public override string ToString()
         {

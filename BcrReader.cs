@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using Bev.SurfaceRasterData;
 
 namespace Bev.IO.BcrReader
 {
@@ -25,7 +26,7 @@ namespace Bev.IO.BcrReader
     {
 
         private string[] sections;
-        private RasterData rasterData;
+        private SurfaceData rasterData;
 
         #region Ctor
         public BcrReader(string fileName)
@@ -190,9 +191,8 @@ namespace Bev.IO.BcrReader
             {
                 return;
             }
-            rasterData = new RasterData(NumPoints, NumProfiles);
-            rasterData.XScale = XScale;
-            rasterData.YScale = YScale;
+            rasterData = new SurfaceData(NumPoints, NumProfiles);
+            SetSurfaceDataProperties();
             string[] mainLines = PrepareSections(sections[1]);
             foreach (var line in mainLines)
             {
@@ -227,6 +227,19 @@ namespace Bev.IO.BcrReader
         }
 
         // from here on we have some handy helper methods
+
+        private void SetSurfaceDataProperties()
+        {
+            rasterData.XScale = XScale;
+            rasterData.YScale = YScale;
+            rasterData.ZScale = ZScale;
+            rasterData.VersionField = VersionField;
+            rasterData.Manufacturer = ManufacID;
+            rasterData.ModifyDate = ModDate;
+            rasterData.CreateDate = CreateDate;
+            rasterData.IsMetricUnit = true;
+            rasterData.Description = "";
+        }
 
         private string[] PrepareSections(string rawText)
         {

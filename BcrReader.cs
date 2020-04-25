@@ -26,23 +26,23 @@ namespace Bev.IO.BcrReader
     {
 
         private string[] sections;
-        private SurfaceData rasterData;
 
         #region Ctor
         public BcrReader(string fileName)
         {
             Status = ErrorCode.OK;
             LoadDataFromFile(fileName);
-            RawMetaData = new List<string>();
             MetaData = new Dictionary<string, string>();
             ParseHeaderSection();
             ParseMainSection();
             ParseTrailerSection();
+            UpdateSurfaceDataProperties();
         }
         #endregion
 
         #region Properties
         public ErrorCode Status { get; private set; }
+        public SurfaceData RasterData { get; private set; }
         // BCR header parameters
         public string VersionField { get; private set; }
         public DateTime? CreateDate { get; private set; }
@@ -55,7 +55,6 @@ namespace Bev.IO.BcrReader
         public double ZScale { get; private set; }
         // BCR trailer information
         public Dictionary<string, string> MetaData {get; private set;}
-        public List<string> RawMetaData { get; private set; }
         #endregion
 
         #region Methods
@@ -63,28 +62,28 @@ namespace Bev.IO.BcrReader
         public double[] GetProfileFor(int profileIndex)
         {
             if (Status == ErrorCode.OK)
-                return rasterData.GetProfileFor(profileIndex);
+                return RasterData.GetProfileFor(profileIndex);
             return null;
         }
 
         public Point3D[] GetPointsProfileFor(int profileIndex)
         {
             if (Status == ErrorCode.OK)
-                return rasterData.GetPointsProfileFor(profileIndex);
+                return RasterData.GetPointsProfileFor(profileIndex);
             return null;
         }
 
         public double GetValueFor(int pointIndex, int profileIndex)
         {
             if (Status == ErrorCode.OK)
-                return rasterData.GetValueFor(pointIndex, profileIndex);
+                return RasterData.GetValueFor(pointIndex, profileIndex);
             return double.NaN;
         }
 
         public Point3D GetPointFor(int pointIndex, int profileIndex)
         {
             if (Status == ErrorCode.OK)
-                return rasterData.GetPointFor(pointIndex, profileIndex);
+                return RasterData.GetPointFor(pointIndex, profileIndex);
             return null;
         }
 
@@ -135,7 +134,6 @@ namespace Bev.IO.BcrReader
             }
             for (int i = 1; i < headerLines.Length; i++)
             {
-                RawMetaData.Add(headerLines[i]);
                 var kv = SplitToKeyValue(headerLines[i]);
                 string key = kv.Item1;
                 string value = kv.Item2;
@@ -191,15 +189,14 @@ namespace Bev.IO.BcrReader
             {
                 return;
             }
-            rasterData = new SurfaceData(NumPoints, NumProfiles);
-            SetSurfaceDataProperties();
+            RasterData = new SurfaceData(NumPoints, NumProfiles);
             string[] mainLines = PrepareSections(sections[1]);
             foreach (var line in mainLines)
             {
                 double[] values = ExtractValuesFromDataLine(line);
                 foreach (var value in values)
                 {
-                    rasterData.FillUpData(value * ZScale);
+                    RasterData.FillUpData(value * ZScale);
                 }
             }
         }
@@ -213,14 +210,12 @@ namespace Bev.IO.BcrReader
             if (sections.Length != 4)
             {
                 // even for missing trailer section add a line of information
-                RawMetaData.Add("no trailer section in file");
                 MetaData.Add("MetaDataInFile", "none");
                 return;
             }
             string[] trailerLines = PrepareSections(sections[2]);
             foreach (var line in trailerLines)
             {
-                RawMetaData.Add(line);
                 var kv = SplitToKeyValue(line);
                 MetaData.Add(kv.Item1, kv.Item2);
             }
@@ -228,17 +223,23 @@ namespace Bev.IO.BcrReader
 
         // from here on we have some handy helper methods
 
-        private void SetSurfaceDataProperties()
+        private void UpdateSurfaceDataProperties()
         {
-            rasterData.XScale = XScale;
-            rasterData.YScale = YScale;
-            rasterData.ZScale = ZScale;
-            rasterData.VersionField = VersionField;
-            rasterData.Manufacturer = ManufacID;
-            rasterData.ModifyDate = ModDate;
-            rasterData.CreateDate = CreateDate;
-            rasterData.IsMetricUnit = true;
-            rasterData.Description = "";
+            if (Status != ErrorCode.OK)
+                return;
+            RasterData.XScale = XScale;
+            RasterData.YScale = YScale;
+            RasterData.ZScale = ZScale;
+            RasterData.VersionField = VersionField;
+            RasterData.Manufacturer = ManufacID;
+            RasterData.ModifyDate = ModDate;
+            RasterData.CreateDate = CreateDate;
+            RasterData.IsMetricUnit = true;
+            RasterData.XUnit = "m";
+            RasterData.YUnit = "m";
+            RasterData.ZUnit = "m";
+            RasterData.Description = "Created by BcrReader";
+            RasterData.MetaData = MetaData;
         }
 
         private string[] PrepareSections(string rawText)

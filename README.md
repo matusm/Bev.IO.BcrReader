@@ -31,6 +31,9 @@ Gets the cartesian coordinates of the point for the given indices. The coordinat
 * `Status`
 Gets the error status as an element of the `ErrorCode` enumeration. The object members should be used only when this property is `ErrorCode.OK`.
 
+* `RasterData`
+Gets the `SurfaceData`object created during the file parsing.
+
 * `VersionField`
 Gets the file type and version as defined in the standards.
 
@@ -60,9 +63,6 @@ Gets the scale of hight values in the original file. This is for information onl
 
 * `MetaData`
 Gets a dictionary of all metadata found in the original file. 
-
-* `RawMetaData`
-Gets a list of all metadata found in the original file. 
 
 
 ## Known problems and restrictions

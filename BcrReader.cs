@@ -358,6 +358,7 @@ namespace Bev.IO.BcrReader
     public enum ErrorCode
     {
         OK,
+        IncompleteData,
         Unknown,
         NoFile,
         NoData,

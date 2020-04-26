@@ -31,12 +31,13 @@ namespace Bev.IO.BcrReader
         public BcrReader(string fileName)
         {
             Status = ErrorCode.OK;
-            LoadDataFromFile(fileName);
+            LoadFile(fileName);
             MetaData = new Dictionary<string, string>();
             ParseHeaderSection();
             ParseMainSection();
             ParseTrailerSection();
             UpdateSurfaceDataProperties();
+            CheckIfDataIsComplete();
         }
         #endregion
 
@@ -61,28 +62,28 @@ namespace Bev.IO.BcrReader
 
         public double[] GetProfileFor(int profileIndex)
         {
-            if (Status == ErrorCode.OK)
+            if (Status == ErrorCode.OK || Status == ErrorCode.IncompleteData)
                 return RasterData.GetProfileFor(profileIndex);
             return null;
         }
 
         public Point3D[] GetPointsProfileFor(int profileIndex)
         {
-            if (Status == ErrorCode.OK)
+            if (Status == ErrorCode.OK || Status == ErrorCode.IncompleteData)
                 return RasterData.GetPointsProfileFor(profileIndex);
             return null;
         }
 
         public double GetValueFor(int pointIndex, int profileIndex)
         {
-            if (Status == ErrorCode.OK)
+            if (Status == ErrorCode.OK || Status == ErrorCode.IncompleteData)
                 return RasterData.GetValueFor(pointIndex, profileIndex);
             return double.NaN;
         }
 
         public Point3D GetPointFor(int pointIndex, int profileIndex)
         {
-            if (Status == ErrorCode.OK)
+            if (Status == ErrorCode.OK || Status == ErrorCode.IncompleteData)
                 return RasterData.GetPointFor(pointIndex, profileIndex);
             return null;
         }
@@ -91,7 +92,7 @@ namespace Bev.IO.BcrReader
 
         #region Private stuff
 
-        private void LoadDataFromFile(string fileName)
+        private void LoadFile(string fileName)
         {
             try
             {
@@ -223,10 +224,17 @@ namespace Bev.IO.BcrReader
 
         // from here on we have some handy helper methods
 
+        private void CheckIfDataIsComplete()
+        {
+            if (Status != ErrorCode.OK) return;
+            if (RasterData == null) return;
+            if (RasterData.IsDataComplete) return;
+            Status = ErrorCode.IncompleteData;
+        }
+
         private void UpdateSurfaceDataProperties()
         {
-            if (Status != ErrorCode.OK)
-                return;
+            if (RasterData == null) return;
             RasterData.XScale = XScale;
             RasterData.YScale = YScale;
             RasterData.ZScale = ZScale;

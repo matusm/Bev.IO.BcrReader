@@ -32,7 +32,7 @@ Gets the cartesian coordinates of the point for the given indices. The coordinat
 Gets the error status as an element of the `ErrorCode` enumeration. The object members should be used only when this property is `ErrorCode.OK`.
 
 * `RasterData`
-Gets the `SurfaceData`object created during the file parsing.
+Gets the `SurfaceData` object created during the file parsing. This allows to use the full functionality of this class.
 
 * `VersionField`
 Gets the file type and version as defined in the standards.

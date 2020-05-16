@@ -54,11 +54,37 @@ namespace Bev.IO.BcrReader
         public double XScale { get; private set; }
         public double YScale { get; private set; }
         public double ZScale { get; private set; }
+        // usefull parameters
+        public double XOffset { get; private set; }
+        public double YOffset { get; private set; }
+        public double ZOffset { get; private set; }
+
         // BCR trailer information
         public Dictionary<string, string> MetaData {get; private set;}
         #endregion
 
         #region Methods
+
+        public void SetXOffset(double value)
+        {
+            XOffset = value;
+            if (RasterData == null) return;
+            RasterData.XOffset = XOffset;
+        }
+
+        public void SetYOffset(double value)
+        {
+            YOffset = value;
+            if (RasterData == null) return;
+            RasterData.YOffset = YOffset;
+        }
+
+        public void SetZOffset(double value)
+        {
+            ZOffset = value;
+            if (RasterData == null) return;
+            RasterData.ZOffset = ZOffset;
+        }
 
         public double[] GetProfileFor(int profileIndex)
         {

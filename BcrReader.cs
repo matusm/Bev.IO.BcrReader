@@ -55,10 +55,10 @@ namespace Bev.IO.BcrReader
         public double YScale { get; private set; }
         public double ZScale { get; private set; }
         // usefull parameters
-        public double XOffset { get; private set; }
-        public double YOffset { get; private set; }
-        public double ZOffset { get; private set; }
-
+        public double XOffset { get; private set; } = 0.0;
+        public double YOffset { get; private set; } = 0.0;
+        public double ZOffset { get; private set; } = 0.0;
+        public double SampleTemperature { get; private set; } = 20.0;
         // BCR trailer information
         public Dictionary<string, string> MetaData {get; private set;}
         #endregion
@@ -248,6 +248,18 @@ namespace Bev.IO.BcrReader
             }
         }
 
+        public void SearchForMetadata()
+        {
+            if (MetaData.ContainsKey("ScanFieldOriginX"))
+                XOffset = ParseToDouble(MetaData["ScanFieldOriginX"]);
+            if (MetaData.ContainsKey("ScanFieldOriginY"))
+                YOffset = ParseToDouble(MetaData["ScanFieldOriginY"]);
+            if (MetaData.ContainsKey("ScanFieldOriginZ"))
+                ZOffset = ParseToDouble(MetaData["ScanFieldOriginZ"]);
+            if (MetaData.ContainsKey("SampleTemperature"))
+                SampleTemperature = ParseToDouble(MetaData["SampleTemperature"]);
+        }
+
         // from here on we have some handy helper methods
 
         private void CheckIfDataIsComplete()
@@ -264,9 +276,9 @@ namespace Bev.IO.BcrReader
             RasterData.XScale = XScale;
             RasterData.YScale = YScale;
             RasterData.ZScale = ZScale;
-            RasterData.XOffset = 0.0;
-            RasterData.YOffset = 0.0;
-            RasterData.ZOffset = 0.0;
+            SetXOffset(XOffset);
+            SetYOffset(YOffset);
+            SetZOffset(ZOffset);
             RasterData.VersionField = VersionField;
             RasterData.Manufacturer = ManufacID;
             RasterData.ModifyDate = ModDate;

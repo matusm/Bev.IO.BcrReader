@@ -246,6 +246,7 @@ namespace Bev.IO.BcrReader
                 var kv = SplitToKeyValue(line);
                 MetaData.Add(kv.Item1, kv.Item2);
             }
+            SearchForMetadata();
         }
 
         public void SearchForMetadata()

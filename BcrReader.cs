@@ -238,6 +238,9 @@ namespace Bev.IO.BcrReader
             RasterData.XScale = XScale;
             RasterData.YScale = YScale;
             RasterData.ZScale = ZScale;
+            RasterData.XOffset = 0.0;
+            RasterData.YOffset = 0.0;
+            RasterData.ZOffset = 0.0;
             RasterData.VersionField = VersionField;
             RasterData.Manufacturer = ManufacID;
             RasterData.ModifyDate = ModDate;

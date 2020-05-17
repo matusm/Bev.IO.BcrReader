@@ -26,6 +26,15 @@ Gets the single hight value for the given indices.
 * `Point3D GetPointFor(int pointIndex, int profileIndex)`
 Gets the cartesian coordinates of the point for the given indices. The coordinates are returned in an `Point3D` object.
 
+* `SetXOffset(double offset)`
+Sets the x coordinate origin for the scan field. Overwrites the value parsed from the input file.
+
+* `SetYOffset(double offset)`
+Sets the y coordinate origin for the scan field. Overwrites the value parsed from the input file.
+
+* `SetZOffset(double offset)`
+Sets the z coordinate origin for the scan field. Overwrites the value parsed from the input file.
+
 ### Properties
 
 * `Status`
@@ -64,6 +73,18 @@ Gets the scale of hight values in the original file. This is for information onl
 * `MetaData`
 Gets a dictionary of all metadata found in the original file. 
 
+* `XOffset`
+Gets the x coordinate origin of the scan field. This value may be parsed from the trailer section of the BCR file. 
+
+* `YOffset`
+Gets the x coordinate origin of the scan field. This value may be parsed from the trailer section of the BCR file. 
+
+* `ZOffset`
+Gets the x coordinate origin of the scan field. This value may be parsed from the trailer section of the BCR file. 
+
+* `SampleTemperature`
+Gets the sample temperature as parsed from the trailer section of the BCR file. Defaults to 20 °C if parsing did not work.
+
 
 ## Known problems and restrictions
 Some legacy parameters like "Compression" and "CheckType" are not evaluated. They were anicipated in the EUNA 15178 document. The current ISO standards call to include them in the file but using default values only. We are not aware of any legacy software or data files using "Compression" or "CheckType".
@@ -71,3 +92,5 @@ Some legacy parameters like "Compression" and "CheckType" are not evaluated. The
 Trailer formatted according to ISO 25178-71 (a pseudo-XML format) can not be interpreted (yet).
 
 The recommended file name extension for the BCR format is `.sdf`. The library does not default to this extension, the user is responsible to provide the full file name to the constructor.
+
+The parsing of the file trailer section for some parameters (Temperature, Offset) relies on the presence of special key strings.

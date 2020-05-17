@@ -246,19 +246,22 @@ namespace Bev.IO.BcrReader
                 var kv = SplitToKeyValue(line);
                 MetaData.Add(kv.Item1, kv.Item2);
             }
-            SearchForMetadata();
+            ParseMetadataForParameters();
         }
 
-        public void SearchForMetadata()
+        // This is very implementation specific!
+        // The trailer section of the BCR file is scanned for case sensitive keys
+        // moreover the numerical value must be given in defined units (m and °C) 
+        public void ParseMetadataForParameters()
         {
             if (MetaData.ContainsKey("ScanFieldOriginX"))
-                XOffset = ParseToDouble(MetaData["ScanFieldOriginX"]);
+                XOffset = ParseFirstTokenToDouble(MetaData["ScanFieldOriginX"]);
             if (MetaData.ContainsKey("ScanFieldOriginY"))
-                YOffset = ParseToDouble(MetaData["ScanFieldOriginY"]);
+                YOffset = ParseFirstTokenToDouble(MetaData["ScanFieldOriginY"]);
             if (MetaData.ContainsKey("ScanFieldOriginZ"))
-                ZOffset = ParseToDouble(MetaData["ScanFieldOriginZ"]);
+                ZOffset = ParseFirstTokenToDouble(MetaData["ScanFieldOriginZ"]);
             if (MetaData.ContainsKey("SampleTemperature"))
-                SampleTemperature = ParseToDouble(MetaData["SampleTemperature"]);
+                SampleTemperature = ParseFirstTokenToDouble(MetaData["SampleTemperature"]);
         }
 
         // from here on we have some handy helper methods
@@ -345,6 +348,18 @@ namespace Bev.IO.BcrReader
             {
                 return null;
             }
+        }
+
+        private double ParseFirstTokenToDouble(string value)
+        {
+            string[] tokens = value.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (tokens.Length == 0) return double.NaN;
+            foreach (var token in tokens)
+            {
+                if (double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out double result))
+                    return result;
+            }
+            return double.NaN;
         }
 
         private double ParseToDouble(string value)

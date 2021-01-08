@@ -27,7 +27,6 @@ namespace Bev.IO.BcrReader
 
         private string[] sections;
 
-        #region Ctor
         public BcrReader(string fileName)
         {
             Status = ErrorCode.OK;
@@ -39,9 +38,7 @@ namespace Bev.IO.BcrReader
             UpdateSurfaceDataProperties();
             CheckIfDataIsComplete();
         }
-        #endregion
 
-        #region Properties
         public ErrorCode Status { get; private set; }
         public SurfaceData RasterData { get; private set; }
         // BCR header parameters
@@ -61,9 +58,6 @@ namespace Bev.IO.BcrReader
         public double SampleTemperature { get; private set; } = 20.0;
         // BCR trailer information
         public Dictionary<string, string> MetaData {get; private set;}
-        #endregion
-
-        #region Methods
 
         public void SetXOffset(double value)
         {
@@ -113,10 +107,6 @@ namespace Bev.IO.BcrReader
                 return RasterData.GetPointFor(pointIndex, profileIndex);
             return null;
         }
-
-        #endregion
-
-        #region Private stuff
 
         private void LoadFile(string fileName)
         {
@@ -417,7 +407,6 @@ namespace Bev.IO.BcrReader
             }
         }
 
-        #endregion
     }
 
     public enum ErrorCode

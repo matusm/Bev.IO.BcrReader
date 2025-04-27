@@ -55,7 +55,7 @@ namespace Bev.IO.BcrReader
         public double XOffset { get; private set; } = 0.0;
         public double YOffset { get; private set; } = 0.0;
         public double ZOffset { get; private set; } = 0.0;
-        public double SampleTemperature { get; private set; } = 20.0;
+        public double SampleTemperature { get; private set; } = double.NaN;
         // BCR trailer information
         public Dictionary<string, string> MetaData {get; private set;}
 

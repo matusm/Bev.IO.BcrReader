@@ -1,6 +1,7 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.35826.135
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bev.IO.BcrReader", "Bev.IO.BcrReader.csproj", "{FBB5911F-C1C2-4A40-B98F-FC31C88085D0}"
 EndProject
 Global
@@ -11,7 +12,13 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{FBB5911F-C1C2-4A40-B98F-FC31C88085D0}.Debug|anycpu.ActiveCfg = Debug|anycpu
 		{FBB5911F-C1C2-4A40-B98F-FC31C88085D0}.Debug|anycpu.Build.0 = Debug|anycpu
-		{FBB5911F-C1C2-4A40-B98F-FC31C88085D0}.Release|anycpu.ActiveCfg = Release|anycpu
-		{FBB5911F-C1C2-4A40-B98F-FC31C88085D0}.Release|anycpu.Build.0 = Release|anycpu
+		{FBB5911F-C1C2-4A40-B98F-FC31C88085D0}.Release|anycpu.ActiveCfg = Release|Any CPU
+		{FBB5911F-C1C2-4A40-B98F-FC31C88085D0}.Release|anycpu.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CF984960-7F9D-43D0-A9A8-98D7669BA3CF}
 	EndGlobalSection
 EndGlobal
